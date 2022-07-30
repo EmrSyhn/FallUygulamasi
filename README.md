@@ -1,16 +1,9 @@
-# fall_app_remaster
+# Günlük rastgele fal uygulaması
 
-A new Flutter project.
+Çoğumuzun bildiği falım sakızlarından çıkan fallar vardır, bu uygulama sakız çiğnemenize gerek kalamdan fallarınızı size günlük olarak gösteren bir uygulama
 
-## Getting Started
+## Nasıl Kullanılır?
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Kodları kullanmakta olduğunuz derleyici içerisine kopyalayın.
+Herhangi bir emilatör veya fiziksel cihaza uygulamanın çıktısını alın.
+Butona bastığınızda sayaç devreye girecek ve karşınıza günlük fallar çıkacak.
