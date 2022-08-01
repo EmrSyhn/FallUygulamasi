@@ -1,4 +1,6 @@
-import 'package:fall_app_remaster/views/homepage.dart';
+import 'package:fall_app_remaster/views/home_page/homepage.dart';
+import 'package:fall_app_remaster/views/register_page/login_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
@@ -12,19 +14,20 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
-  runApp(
-    const MaterialApp(
-      home: MyApp(),
-    ),
-  );
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyFirstPage(),
+  final user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    runApp(
+      const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: MyFirstPage(),
+      ),
+    );
+  } else {
+    runApp(
+      const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: LoginPage(),
+      ),
     );
   }
 }
