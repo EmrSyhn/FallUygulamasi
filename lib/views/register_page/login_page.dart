@@ -1,3 +1,4 @@
+import 'package:fall_app_remaster/models/loginislemleri.dart';
 import 'package:fall_app_remaster/views/home_page/homepage.dart';
 import 'package:fall_app_remaster/views/register_page/register_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +13,8 @@ class LoginPage extends StatefulWidget {
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
+
+GirisIslemler giris = GirisIslemler();
 
 class _LoginPageState extends State<LoginPage> {
   TextEditingController mail = TextEditingController();
@@ -70,8 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                   } else {
                     // 2. Kullanıcı bilgileriile girşi yapmayı dene
                     try {
-                      await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: mail.text, password: parola.text);
+                      giris.girisYap(mail: mail.text, password: parola.text);
 
                       // ignore: use_build_context_synchronously
                       Navigator.pushReplacement(
@@ -152,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
       builder: (ctx) => AlertDialog(
         title: const Text("Hata"),
         content: Text(msg),
-        actions: <Widget>[
+        actions: [
           TextButton(
             onPressed: () {
               Navigator.of(ctx).pop();
@@ -162,10 +164,5 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
-  }
-
-  biseyler() {
-    mail.clear();
-    parola.clear();
   }
 }

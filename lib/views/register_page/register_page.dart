@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fall_app_remaster/models/loginislemleri.dart';
 import 'package:fall_app_remaster/views/home_page/homepage.dart';
 import 'package:fall_app_remaster/views/register_page/comp/butons.dart';
 import 'package:fall_app_remaster/views/register_page/comp/texts.dart';
 import 'package:fall_app_remaster/views/register_page/login_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -12,6 +11,8 @@ class RegisterPage extends StatefulWidget {
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
+
+GirisIslemler giris = GirisIslemler();
 
 class _RegisterPageState extends State<RegisterPage> {
   TextEditingController userName = TextEditingController();
@@ -67,19 +68,10 @@ class _RegisterPageState extends State<RegisterPage> {
               GonderButon(
                 yazi: 'Kayıt ol',
                 press: () async {
-                  final kullaniciolusturma = await FirebaseAuth.instance
-                      .createUserWithEmailAndPassword(
-                          email: mail.text, password: password.text);
-                  final uidTututcu = kullaniciolusturma.user?.uid;
-                  debugPrint(uidTututcu);
-                  FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(uidTututcu)
-                      .set({
-                    "UserName": userName.text,
-                    "Email": mail.text,
-                    "Passwords:": password.text
-                  });
+                  giris.kayitOl(
+                      mail: mail.text,
+                      password: password.text,
+                      userName: userName.text);
                   if (!mounted) return;
                   Navigator.pushReplacement(
                     context,

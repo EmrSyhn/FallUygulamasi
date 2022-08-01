@@ -62,7 +62,7 @@ class IkonButon extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       icon: ikoncuk,
-      onPressed: () {},
+      onPressed: press,
     );
   }
 }

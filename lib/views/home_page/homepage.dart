@@ -1,11 +1,11 @@
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:fall_app_remaster/models/zamanhesabi.dart';
 import 'package:fall_app_remaster/views/register_page/register_page.dart';
 import 'package:fall_app_remaster/viewsmodel/circular_countdown.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../models/funciton.dart';
+import '../../models/loginislemleri.dart';
 import '../../viewsmodel/widgets.dart';
-import '../register_page/login_page.dart';
 
 class MyFirstPage extends StatefulWidget {
   const MyFirstPage({Key? key}) : super(key: key);
@@ -15,6 +15,8 @@ class MyFirstPage extends StatefulWidget {
 }
 
 TumFonksiyonlar tumFunx = TumFonksiyonlar();
+ZamanHesabi zamnFonks = ZamanHesabi();
+GirisIslemler giris = GirisIslemler();
 
 class _MyFirstPageState extends State<MyFirstPage> {
   final CountDownController controller = CountDownController();
@@ -41,9 +43,8 @@ class _MyFirstPageState extends State<MyFirstPage> {
                           fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     IkonButon(
-                      press: () async {
-                        // tumFunx.cikisYap();
-                        await FirebaseAuth.instance.signOut();
+                      press: () {
+                        giris.cikisYap();
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -74,7 +75,8 @@ class _MyFirstPageState extends State<MyFirstPage> {
                   String contentFal = await tumFunx.fireBaseBaglanti() ?? '';
                   String veriKlncAdi = await tumFunx.fireBaseKllnc() ?? '';
                   // 2-> Kalan zaman hesaplama
-                  var zamanlar = tumFunx.sayacZamanHesapla();
+
+                  var zamanlar = zamnFonks.sayacZamanHesapla();
                   sayaczaman = zamanlar[2];
                   _sayacFal = contentFal;
                   _kllncAdi = veriKlncAdi;
@@ -89,6 +91,11 @@ class _MyFirstPageState extends State<MyFirstPage> {
                       start: zamanlar[0],
                       end: zamanlar[1],
                       content: contentFal);
+                  //FireBaseFireStore tarafi
+                  await zamnFonks.fireBaseStroeDataSaved(
+                      start: zamanlar[0],
+                      end: zamanlar[1],
+                      content: contentFal);
                   debugPrint("sadasdsdas");
                   setState(() {});
                 },
@@ -99,19 +106,4 @@ class _MyFirstPageState extends State<MyFirstPage> {
       ),
     );
   }
-}
-
-PreferredSizeWidget myAppBar() {
-  return PreferredSize(
-    preferredSize: const Size(double.infinity, 100),
-    child: Container(
-      height: 100,
-      color: const Color.fromARGB(0, 173, 164, 164),
-      width: double.infinity,
-      child: IconButton(
-        onPressed: () {},
-        icon: const Icon(Icons.logout_outlined),
-      ),
-    ),
-  );
 }
