@@ -5,15 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TumFonksiyonlar with ChangeNotifier {
-  Future<String?> fireBaseKllnc() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    String uid = user!.uid;
-
-    var kUserName =
-        await FirebaseFirestore.instance.collection('users').doc(uid).get();
-    return kUserName.data()?['UserName'];
-  }
-
   Future<String?> fireBaseBaglanti() async {
     var doc = await FirebaseFirestore.instance
         .collection('Yazılar')
@@ -37,5 +28,13 @@ class TumFonksiyonlar with ChangeNotifier {
     prefs.setInt("falBaslangic", start);
     prefs.setInt("falBitis", end);
     prefs.setString("falYazi", content);
+  }
+
+  Future<String?> fireBaseKllnc() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    String uid = user!.uid;
+    var kUserName =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    return kUserName.data()?['UserName'];
   }
 }

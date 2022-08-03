@@ -1,6 +1,6 @@
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:fall_app_remaster/models/zamanhesabi.dart';
-import 'package:fall_app_remaster/views/register_page/register_page.dart';
+import 'package:fall_app_remaster/views/register_page/login_page.dart';
 import 'package:fall_app_remaster/viewsmodel/circular_countdown.dart';
 import 'package:flutter/material.dart';
 import '../../models/funciton.dart';
@@ -20,6 +20,8 @@ GirisIslemler giris = GirisIslemler();
 
 class _MyFirstPageState extends State<MyFirstPage> {
   final CountDownController controller = CountDownController();
+  Future<String?> veriKlncAdi = tumFunx.fireBaseKllnc();
+
   int sayaczaman = 10;
   String _sayacFal = '';
   String _kllncAdi = '';
@@ -45,10 +47,11 @@ class _MyFirstPageState extends State<MyFirstPage> {
                     IkonButon(
                       press: () {
                         giris.cikisYap();
+                        debugPrint('Hesaptan çıkış yapıldı');
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const RegisterPage(),
+                            builder: (context) => const LoginPage(),
                           ),
                         );
                       },
@@ -80,7 +83,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
                   sayaczaman = zamanlar[2];
                   _sayacFal = contentFal;
                   _kllncAdi = veriKlncAdi;
-                  debugPrint('Slm cnm $veriKlncAdi');
+                  debugPrint('Kullanıcı $veriKlncAdi');
 
                   // 3-> gerekli işlemler start restart gibi
                   controller.start();
@@ -96,7 +99,6 @@ class _MyFirstPageState extends State<MyFirstPage> {
                       start: zamanlar[0],
                       end: zamanlar[1],
                       content: contentFal);
-                  debugPrint("sadasdsdas");
                   setState(() {});
                 },
               ),

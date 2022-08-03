@@ -3,30 +3,59 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class GirisIslemler {
-  void kayitOl({
+//slm
+  Future<UserCredential?> kayitOlcuk({
     required String mail,
     required String password,
     required String userName,
   }) async {
-    final kullaniciolusturma = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: mail, password: password);
-    final uidTututcu = kullaniciolusturma.user?.uid;
-    debugPrint(uidTututcu);
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc(uidTututcu)
-        .set({"UserName": userName, "Email": mail, "Passwords:": password});
-  }
+    try {
+      UserCredential credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: mail,
+        password: password,
+      );
+      final uidTututcu = credential.user?.uid;
+      debugPrint(uidTututcu);
+      FirebaseFirestore.instance
+          .collection("users")
+          .doc(uidTututcu)
+          .set({"UserName": userName, "Email": mail, "Passwords:": password});
 
-  void girisYap({
+      return credential;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        debugPrint('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        debugPrint('The account already exists for that email.');
+      }
+      return null;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+//slm
+
+  girisYap({
     required String mail,
     required String password,
   }) async {
-    await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: mail, password: password);
+    try {
+      UserCredential kullanici = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: mail, password: password);
+      debugPrint('$kullanici');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        debugPrint('No user found for that email.');
+      }
+      if (e.code == 'wrong-password') {
+        debugPrint('Hatalı Parola');
+      }
+    }
   }
 
-  void cikisYap() {
+  cikisYap() {
     FirebaseAuth.instance.signOut();
   }
 }

@@ -19,6 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController mail = TextEditingController();
   TextEditingController password = TextEditingController();
 
+  final _dogrulamaAnahtari = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,54 +34,89 @@ class _RegisterPageState extends State<RegisterPage> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Form(
+                key: _dogrulamaAnahtari,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 20),
-                    const Text(
-                      'Adınız',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    FormFields(
+                      kontrolcu: userName,
+                      yazi: 'Adınız',
+                      ikon: const Icon(Icons.people),
                     ),
-                    TextFields(silik: 'Adınız', kontrolcu: userName),
                     const SizedBox(height: 20),
-                    const Text(
-                      'Mail',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    FormFields(
+                      kontrolcu: mail,
+                      yazi: 'Mail',
+                      ikon: const Icon(Icons.mail),
                     ),
-                    TextFields(silik: 'Mailiniz', kontrolcu: mail),
                     const SizedBox(height: 20),
-                    const Text(
-                      'Parolanız',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    // -->textFormFields
+                    FormFields(
+                      ikon: const Icon(Icons.password),
+                      kontrolcu: password,
+                      yazi: 'Parolanız',
+                      gizlilik: true,
                     ),
-                    TextFields(
-                        gizlilik: true,
-                        silik: 'Parolanız',
-                        kontrolcu: password),
+
+                    // -->textFormFields
+
                     const SizedBox(height: 20),
                   ],
                 ),
               ),
               const SizedBox(height: 20),
               GonderButon(
-                yazi: 'Kayıt ol',
+                yazi: 'Kayıt Ol',
                 press: () async {
-                  giris.kayitOl(
+                  //kullanıcı bilgi kontrolu
+                  giris.kayitOlcuk(
                       mail: mail.text,
                       password: password.text,
                       userName: userName.text);
-                  if (!mounted) return;
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MyFirstPage(),
-                    ),
-                  );
+                  if (userName.text == '' ||
+                      mail.text == '' ||
+                      password.text == '') {
+                    _showDialog(msg: 'Gerekli Yerleri Doldurmalısın');
+                  } else {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MyFirstPage(),
+                        ));
+                  }
                 },
               ),
+
+              // GonderButon(
+              //   yazi: 'Kayıt ol',
+              //   press: () async {
+              //     // -->Kullanıcı verisini kontrol et
+              //     if (userName.text == '' ||
+              //         mail.text == '' ||
+              //         password.text == '') {
+              //       debugPrint('bilgiler hatalı');
+              //     }
+              //     // --> try catch ile hata yakala
+              //     else {
+              //       try {
+              //         giris.kayitOlcuk(
+              //             mail: mail.text,
+              //             password: password.text,
+              //             userName: userName.text);
+              //         // -->Veriler doğruysa giriş yap
+
+              //         Navigator.pushReplacement(
+              //             context,
+              //             MaterialPageRoute(
+              //                 builder: (context) => const MyFirstPage()));
+              //       } on FirebaseAuthException catch (e) {
+              //         debugPrint('e');
+              //       }
+              //     }
+              //   },
+              // ),
+              //
               const SizedBox(height: 10),
               const Divider(
                 height: 10,
@@ -104,32 +140,33 @@ class _RegisterPageState extends State<RegisterPage> {
                 ],
               ),
               const SizedBox(height: 10),
-
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     IkonButoncus(
-              //       ikoncuk: const Icon(Icons.abc),
-              //       press: () {},
-              //     ),
-              //     IkonButoncus(
-              //       ikoncuk: const Icon(Icons.abc),
-              //       press: () {},
-              //     ),
-              //     IkonButoncus(
-              //       ikoncuk: const Icon(Icons.abc),
-              //       press: () {},
-              //     ),
-              //     IkonButoncus(
-              //       ikoncuk: const Icon(Icons.abc),
-              //       press: () {},
-              //     ),
-              //   ],
-              // )
             ],
           ),
         ),
       )),
+    );
+  }
+
+  void _showDialog({String msg = ''}) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: const Text("Uyarı"),
+          content: Text(msg),
+          actions: [
+            // usually buttons at the bottom of the dialog
+            ElevatedButton(
+              child: const Text("Kapat"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
