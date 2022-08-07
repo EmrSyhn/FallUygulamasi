@@ -31,7 +31,7 @@ class GirisIslemler {
       }
       return null;
     } catch (e) {
-      print(e);
+      debugPrint('$e');
       return null;
     }
   }

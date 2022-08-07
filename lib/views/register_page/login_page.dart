@@ -20,7 +20,6 @@ GirisIslemler giris = GirisIslemler();
 class _LoginPageState extends State<LoginPage> {
   TextEditingController mail = TextEditingController();
   TextEditingController parola = TextEditingController();
-  final _dogrulamaAnahtari = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,42 +35,74 @@ class _LoginPageState extends State<LoginPage> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               const SizedBox(height: 20),
-              Form(
-                key: _dogrulamaAnahtari,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FormFields(
-                      kontrolcu: mail,
-                      yazi: 'Mail',
-                      ikon: const Icon(Icons.mail),
-                    ),
-                    const SizedBox(height: 20),
-                    FormFields(
-                      ikon: const Icon(Icons.password),
-                      kontrolcu: parola,
-                      yazi: 'Parolanız',
-                      gizlilik: true,
-                    ),
-                  ],
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FormFields(
+                    kontrolcu: mail,
+                    yazi: 'Mail',
+                    ikon: const Icon(Icons.mail),
+                  ),
+                  const SizedBox(height: 20),
+                  FormFields(
+                    ikon: const Icon(Icons.password),
+                    kontrolcu: parola,
+                    yazi: 'Parolanız',
+                    gizlilik: true,
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 30,
               ),
+              // GonderButon(
+              //   yazi: 'yazi',
+              //   press: () async {
+              //     if (mail.text == null || parola.text == null) {
+              //     } else {
+              //       try {
+              //         await giris.girisYap(
+              //             mail: mail.text, password: parola.text);
+              //         Navigator.pushReplacement(
+              //           context,
+              //           MaterialPageRoute(
+              //               builder: (context) => const MyFirstPage()),
+              //         );
+              //       } on FirebaseAuthException catch (e) {
+              //         debugPrint('$e');
+              //         var msg = '';
+              //         if (e.code == 'user-not-found') {
+              //           msg = "Kullanıcı bulunamadı";
+              //         }
+              //         if (e.code == 'invalid-email') {
+              //           msg = "Hatalı mail girişi";
+              //         }
+              //         if (e.code == 'wrong-password') {
+              //           msg = "Hatalı Parola";
+              //         }
+              //         _showDialog(context, msg: msg);
+              //       }
+              //     }
+              //   },
+              // ),
               GonderButon(
-                yazi: 'yazi',
+                yazi: 'Giriş Yap',
                 press: () async {
+                  // --> Kullanıcı bilgilerinin null olup olmadığını kontrol et
                   if (mail.text == null || parola.text == null) {
                   } else {
+                    // 2. Kullanıcı bilgileriile girşi yapmayı dene
                     try {
-                      await giris.girisYap(
-                          mail: mail.text, password: parola.text);
+                      final giris = await FirebaseAuth.instance
+                          .signInWithEmailAndPassword(
+                              email: mail.text, password: parola.text);
+                      debugPrint('$giris');
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const MyFirstPage()),
                       );
+                      // 3. hata varsa kullanıcıya nesaj ver
                     } on FirebaseAuthException catch (e) {
                       debugPrint('$e');
                       var msg = '';
@@ -89,40 +120,6 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
               ),
-              // GonderButon(
-              //     yazi: 'Giriş Yap',
-              //     press: () async {
-              //       // --> Kullanıcı bilgilerinin null olup olmadığını kontrol et
-              //       if (mail.text == null || parola.text == null) {
-              //       } else {
-              //         // 2. Kullanıcı bilgileriile girşi yapmayı dene
-              //         try {
-              //           final giris = await FirebaseAuth.instance
-              //               .signInWithEmailAndPassword(
-              //                   email: mail.text, password: parola.text);
-              //           debugPrint('$giris');
-              //           Navigator.pushReplacement(
-              //             context,
-              //             MaterialPageRoute(
-              //                 builder: (context) => const MyFirstPage()),
-              //           );
-              //           // 3. hata varsa kullanıcıya nesaj ver
-              //         } on FirebaseAuthException catch (e) {
-              //           debugPrint('$e');
-              //           var msg = '';
-              //           if (e.code == 'user-not-found') {
-              //             msg = "Kullanıcı bulunamadı";
-              //           }
-              //           if (e.code == 'invalid-email') {
-              //             msg = "Hatalı mail girişi";
-              //           }
-              //           if (e.code == 'wrong-password') {
-              //             msg = "Hatalı Parola";
-              //           }
-              //           _showDialog(context, msg: msg);
-              //         }
-              //       }
-              //     }),
               const SizedBox(height: 10),
               const Divider(
                 color: Colors.black,
@@ -151,17 +148,14 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _showDialog(BuildContext context, {String msg = ''}) {
-    // flutter defined function
+  _showDialog(BuildContext context, {String msg = ''}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // return object of type Dialog
         return AlertDialog(
           title: const Text("Uyarı"),
           content: Text(msg),
           actions: [
-            // usually buttons at the bottom of the dialog
             ElevatedButton(
               child: const Text("Kapat"),
               onPressed: () {
