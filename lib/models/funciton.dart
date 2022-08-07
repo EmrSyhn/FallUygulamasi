@@ -30,7 +30,7 @@ class TumFonksiyonlar with ChangeNotifier {
     prefs.setString("falYazi", content);
   }
 
-  Future<String?> fireBaseKllnc() async {
+  Future<String> fireBaseKllnc() async {
     User? user = FirebaseAuth.instance.currentUser;
     String uid = user!.uid;
     var kUserName =

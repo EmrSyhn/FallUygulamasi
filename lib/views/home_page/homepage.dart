@@ -20,12 +20,9 @@ GirisIslemler giris = GirisIslemler();
 
 class _MyFirstPageState extends State<MyFirstPage> {
   final CountDownController controller = CountDownController();
-  Future<String?> veriKlncAdi = tumFunx.fireBaseKllnc();
 
   int sayaczaman = 10;
-  String _sayacFal = '';
-  String _kllncAdi = '';
-
+  String _sayacFal = 'Lütfen butona tıklayınız';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,10 +36,22 @@ class _MyFirstPageState extends State<MyFirstPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      _kllncAdi,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 20),
+                    FutureBuilder(
+                      future: tumFunx.fireBaseKllnc(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          debugPrint('${snapshot.error}');
+                          return const Text('slm');
+                        } else if (snapshot.hasData) {
+                          return Text(
+                            snapshot.data.toString(),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
+                          );
+                        } else {
+                          return const CircularProgressIndicator();
+                        }
+                      },
                     ),
                     IkonButon(
                       press: () {
@@ -75,19 +84,24 @@ class _MyFirstPageState extends State<MyFirstPage> {
               ButonFal(
                 tiklama: () async {
                   // 1-> FireBse bağlantısı
-                  String contentFal = await tumFunx.fireBaseBaglanti() ?? '';
-                  String veriKlncAdi = await tumFunx.fireBaseKllnc() ?? '';
+                  String contentFal = await tumFunx
+                          .fireBaseBaglanti()
+                          .timeout(const Duration(seconds: 2), onTimeout: () {
+                        debugPrint("İNTERNETİN YOK");
+                        _showDialog(context, msg: 'İnternetin yok');
+                        return null;
+                      }) ??
+                      '';
+                  String veriKlncAdi = await tumFunx.fireBaseKllnc();
                   // 2-> Kalan zaman hesaplama
 
                   var zamanlar = zamnFonks.sayacZamanHesapla();
                   sayaczaman = zamanlar[2];
                   _sayacFal = contentFal;
-                  _kllncAdi = veriKlncAdi;
                   debugPrint('Kullanıcı $veriKlncAdi');
 
                   // 3-> gerekli işlemler start restart gibi
                   controller.start();
-
                   // 4-> bilgileri localde kaydet
 
                   await tumFunx.localSaveUserData(
@@ -106,6 +120,26 @@ class _MyFirstPageState extends State<MyFirstPage> {
           ),
         ),
       ),
+    );
+  }
+
+  _showDialog(BuildContext context, {String msg = ''}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Uyarı"),
+          content: Text(msg),
+          actions: [
+            ElevatedButton(
+              child: const Text("Kapat"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
