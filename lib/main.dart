@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'firebase_options.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,19 +16,32 @@ Future<void> main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   final user = FirebaseAuth.instance.currentUser;
-  if (user != null) {
-    runApp(
-      const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: MyFirstPage(),
-      ),
-    );
-  } else {
-    runApp(
-      const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: LoginPage(),
-      ),
-    );
+
+  var connectivityResult = await (Connectivity().checkConnectivity());
+  if (connectivityResult != ConnectivityResult.none) {
+    // I am connected to a mobile network.
+    if (user != null) {
+      runApp(
+        const MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: MyFirstPage(),
+        ),
+      );
+    } else if (user == null) {
+      runApp(
+        const MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: LoginPage(),
+        ),
+      );
+    } else if (connectivityResult == ConnectivityResult.none) {
+      // I am connected to a wifi network.
+      runApp(
+        const MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: Scaffold(),
+        ),
+      );
+    }
   }
 }
