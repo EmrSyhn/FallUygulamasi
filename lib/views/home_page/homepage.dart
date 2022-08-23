@@ -3,6 +3,7 @@ import 'package:fall_app_remaster/models/zamanhesabi.dart';
 import 'package:fall_app_remaster/views/register_page/login_page.dart';
 import 'package:fall_app_remaster/viewsmodel/circular_countdown.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../models/funciton.dart';
 import '../../models/loginislemleri.dart';
 import '../../viewsmodel/widgets.dart';
@@ -56,7 +57,8 @@ class _MyFirstPageState extends State<MyFirstPage> {
                     IkonButon(
                       press: () {
                         giris.cikisYap();
-                        debugPrint('Hesaptan çıkış yapıldı');
+                        Get.snackbar(
+                            'Oturum kapatıldı', 'Başarıyla çıkış yapıldı');
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -87,8 +89,9 @@ class _MyFirstPageState extends State<MyFirstPage> {
                   String contentFal = await tumFunx
                           .fireBaseBaglanti()
                           .timeout(const Duration(seconds: 2), onTimeout: () {
-                        debugPrint("İNTERNETİN YOK");
-                        _showDialog(context, msg: 'İnternetin yok');
+                        Get.defaultDialog(
+                            title: 'Hata', middleText: 'İnternetin yok');
+
                         return null;
                       }) ??
                       '';
@@ -120,26 +123,6 @@ class _MyFirstPageState extends State<MyFirstPage> {
           ),
         ),
       ),
-    );
-  }
-
-  _showDialog(BuildContext context, {String msg = ''}) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Uyarı"),
-          content: Text(msg),
-          actions: [
-            ElevatedButton(
-              child: const Text("Kapat"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

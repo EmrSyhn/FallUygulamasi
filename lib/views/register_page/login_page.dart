@@ -1,10 +1,9 @@
-// ignore_for_file: use_build_context_synchronously, unnecessary_null_comparison
-
 import 'package:fall_app_remaster/models/loginislemleri.dart';
 import 'package:fall_app_remaster/views/home_page/homepage.dart';
 import 'package:fall_app_remaster/views/register_page/register_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'comp/butons.dart';
 import 'comp/texts.dart';
 
@@ -55,36 +54,6 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(
                 height: 30,
               ),
-              // GonderButon(
-              //   yazi: 'yazi',
-              //   press: () async {
-              //     if (mail.text == null || parola.text == null) {
-              //     } else {
-              //       try {
-              //         await giris.girisYap(
-              //             mail: mail.text, password: parola.text);
-              //         Navigator.pushReplacement(
-              //           context,
-              //           MaterialPageRoute(
-              //               builder: (context) => const MyFirstPage()),
-              //         );
-              //       } on FirebaseAuthException catch (e) {
-              //         debugPrint('$e');
-              //         var msg = '';
-              //         if (e.code == 'user-not-found') {
-              //           msg = "Kullanıcı bulunamadı";
-              //         }
-              //         if (e.code == 'invalid-email') {
-              //           msg = "Hatalı mail girişi";
-              //         }
-              //         if (e.code == 'wrong-password') {
-              //           msg = "Hatalı Parola";
-              //         }
-              //         _showDialog(context, msg: msg);
-              //       }
-              //     }
-              //   },
-              // ),
               GonderButon(
                 yazi: 'Giriş Yap',
                 press: () async {
@@ -97,25 +66,23 @@ class _LoginPageState extends State<LoginPage> {
                           .signInWithEmailAndPassword(
                               email: mail.text, password: parola.text);
                       debugPrint('$giris');
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MyFirstPage()),
-                      );
+                      //Giriş yapıldı
+                      Get.off(const MyFirstPage());
+                      //Giriş yapıldı
+
                       // 3. hata varsa kullanıcıya nesaj ver
                     } on FirebaseAuthException catch (e) {
                       debugPrint('$e');
-                      var msg = '';
+
                       if (e.code == 'user-not-found') {
-                        msg = "Kullanıcı bulunamadı";
+                        Get.defaultDialog(middleText: 'Kullanıcı bulunamadı');
                       }
                       if (e.code == 'invalid-email') {
-                        msg = "Hatalı mail girişi";
+                        Get.defaultDialog(middleText: 'Hatalı mail girişi');
                       }
                       if (e.code == 'wrong-password') {
-                        msg = "Hatalı Parola";
+                        Get.defaultDialog(middleText: 'Hatalı Parola');
                       }
-                      _showDialog(context, msg: msg);
                     }
                   }
                 },
@@ -130,12 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                   const Text('Hesabın yok mu?'),
                   TiklanmacliButon(
                     press: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const RegisterPage(),
-                        ),
-                      );
+                      Get.off(const RegisterPage());
                     },
                     yazi: 'Kayıt Ol',
                   )
@@ -145,26 +107,6 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
-    );
-  }
-
-  _showDialog(BuildContext context, {String msg = ''}) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Uyarı"),
-          content: Text(msg),
-          actions: [
-            ElevatedButton(
-              child: const Text("Kapat"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

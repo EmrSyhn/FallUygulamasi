@@ -4,6 +4,7 @@ import 'package:fall_app_remaster/views/register_page/comp/butons.dart';
 import 'package:fall_app_remaster/views/register_page/comp/texts.dart';
 import 'package:fall_app_remaster/views/register_page/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -77,13 +78,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   if (userName.text == '' ||
                       mail.text == '' ||
                       password.text == '') {
-                    _showDialog(msg: 'Gerekli Yerleri Doldurmalısın');
+                    Get.defaultDialog(
+                        middleText: 'Gerekli Yerleri Doldurmalısın');
                   } else {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MyFirstPage(),
-                        ));
+                    Get.off(() => const MyFirstPage());
                   }
                 },
               ),
@@ -128,12 +126,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   const Text('Hesabım var'),
                   TiklanmacliButon(
                     press: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginPage(),
-                        ),
-                      );
+                      Get.off(() => const LoginPage());
                     },
                     yazi: 'Giriş Yap',
                   )
@@ -144,29 +137,6 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ),
       )),
-    );
-  }
-
-  void _showDialog({String msg = ''}) {
-    // flutter defined function
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: const Text("Uyarı"),
-          content: Text(msg),
-          actions: [
-            // usually buttons at the bottom of the dialog
-            ElevatedButton(
-              child: const Text("Kapat"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }
